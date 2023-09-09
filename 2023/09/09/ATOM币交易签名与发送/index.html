@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="ATOM币交易发送​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。 一、该链特征​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。 ​		2.所用的RPC节点应该也是采用的第三方的节点(https:&#x2F;&#x2F;getblock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ATOM币交易签名与发送">
+<meta property="og:url" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/index.html">
+<meta property="og:site_name" content="Nobody&#39;s Station">
+<meta property="og:description" content="ATOM币交易发送​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。 一、该链特征​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。 ​		2.所用的RPC节点应该也是采用的第三方的节点(https:&#x2F;&#x2F;getblock">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/akthash.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/token.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/1.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/2.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/rawtx.png">
+<meta property="article:published_time" content="2023-09-09T02:25:42.000Z">
+<meta property="article:modified_time" content="2023-09-09T02:27:01.216Z">
+<meta property="article:author" content="Mr.Guan">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/akthash.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ATOM币交易签名与发送</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/08/27/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81%E4%BA%A4%E6%98%93%E7%BA%A0%E9%94%99/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&text=ATOM币交易签名与发送"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&is_video=false&description=ATOM币交易签名与发送"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ATOM币交易签名与发送&body=Check out this article: http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&name=ATOM币交易签名与发送&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&t=ATOM币交易签名与发送"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E5%8F%91%E9%80%81"><span class="toc-number">1.</span> <span class="toc-text">ATOM币交易发送</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%AF%A5%E9%93%BE%E7%89%B9%E5%BE%81"><span class="toc-number">1.0.1.</span> <span class="toc-text">一、该链特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AD%BE%E5%90%8D%E8%BF%87%E7%A8%8B"><span class="toc-number">1.0.2.</span> <span class="toc-text">二、签名过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BA%A4%E6%98%93%E5%8F%91%E9%80%81"><span class="toc-number">1.0.3.</span> <span class="toc-text">三、交易发送</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ATOM币交易签名与发送
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Mr.Guan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-09-09T02:25:42.000Z" class="dt-published" itemprop="datePublished">2023-09-09</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="ATOM币交易发送"><a href="#ATOM币交易发送" class="headerlink" title="ATOM币交易发送"></a>ATOM币交易发送</h1><p>​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。</p>
+<h3 id="一、该链特征"><a href="#一、该链特征" class="headerlink" title="一、该链特征"></a>一、该链特征</h3><p>​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。</p>
+<p>​		2.所用的RPC节点应该也是采用的第三方的节点(<a target="_blank" rel="noopener" href="https://getblock.io)./">https://getblock.io)。</a></p>
+<p>​		3.COSMOS支持IBC生态环境，所有支持IBC的链都可以相互将链上的资产转移到其它的链上。之后就被视为是一个代币，转账的交易费花费的是托管的链的币。</p>
+
+
+<p>​		图中是AKT币托管到cosmos链上，可以在cosmos链上进行转移，花费的交易费是ATOM币。</p>
+<h3 id="二、签名过程"><a href="#二、签名过程" class="headerlink" title="二、签名过程"></a>二、签名过程</h3><p>1.获取必要的一些信息</p>
+<p>&#x2F;cosmos&#x2F;auth&#x2F;v1beta1&#x2F;accounts&#x2F;{address}	</p>
+<p>返回值中包含的重要信息：</p>
+<table>
+<thead>
+<tr>
+<th align="center">字段</th>
+<th align="center">字段说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">sequence</td>
+<td align="center">nonce值，sequence-1的值已被使用，本次交易应该使用本次返回的sequence值</td>
+</tr>
+<tr>
+<td align="center">pub_key</td>
+<td align="center">初次返回是null，交易签名后会生成，发送的该地址账户签名的交易如果通过之后就会返回一个值</td>
+</tr>
+<tr>
+<td align="center">account_number</td>
+<td align="center">每个地址均会有一个account_number</td>
+</tr>
+</tbody></table>
+<ol start="2">
+<li>签名字段</li>
+</ol>
+<p>​		交易在该链中被称为message，根据交易类型的不同，发送不同的message类。</p>
+<table>
+<thead>
+<tr>
+<th align="center">字段</th>
+<th align="center">字段说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">accountNumber</td>
+<td align="center">1中获取的account_number</td>
+</tr>
+<tr>
+<td align="center">chainID</td>
+<td align="center">确定是哪个链，主链是’cosmoshub-4’</td>
+</tr>
+<tr>
+<td align="center">memo</td>
+<td align="center">可以自己填写的信息，不重要</td>
+</tr>
+<tr>
+<td align="center">fee</td>
+<td align="center">交易费，包含两个部分，一个是amount，是一个amount类型队列，amount包含两个字段：denom是货币的符号，为字符串类型，如“uatom”；amount为数量。gas为交易gas数量上限。</td>
+</tr>
+<tr>
+<td align="center">sequence</td>
+<td align="center">1中的sequence，直接调用即可</td>
+</tr>
+<tr>
+<td align="center">message</td>
+<td align="center">交易的主体，所有类型的交易都被叫做是message。是message类型的列表，如果要发送交易，使用message_send.包含的字段有fromaddress、toaddress和amount</td>
+</tr>
+<tr>
+<td align="center">mode</td>
+<td align="center">交易广播的模式</td>
+</tr>
+<tr>
+<td align="center">privatekey</td>
+<td align="center">签名的私钥</td>
+</tr>
+<tr>
+<td align="center">signingMode</td>
+<td align="center">选择签名后交易的格式，有json和protobuf两种，之前主网的API是支持发送json格式的签名后交易的，但是现在只支持protobuf格式的。</td>
+</tr>
+</tbody></table>
+<ol start="3">
+<li>代币交易发送</li>
+</ol>
+<p>​		交易在该链中被称为message，根据交易类型的不同，发送不同的message类。如果是对托管到cosmos链上的代币，还是用message_send类。在amount字段中的denom要进行改变。</p>
+<table>
+<thead>
+<tr>
+<th align="center">字段</th>
+<th align="center">字段说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">amount</td>
+<td align="center">代币数量</td>
+</tr>
+<tr>
+<td align="center">denom</td>
+<td align="center">对应代币的hash值</td>
+</tr>
+</tbody></table>
+<p>​		代币hash可以在<a target="_blank" rel="noopener" href="https://www.mintscan.io/cosmos/assets">这里</a>里查。目前没有发现可以获取hash值的api。</p>
+<img src="/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/akthash.png" class="">
+
+<p>4.链间代币托管</p>
+<p>​		可以将链A上的主币托管到链B上，需要用到message_transfer这个类。各个字段如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">字段</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">sourcechannel</td>
+<td align="center">链之间交易通道的代号？在<a target="_blank" rel="noopener" href="https://www.mintscan.io/cosmos/assets%E4%B8%AD%E5%8F%AF%E6%9F%A5%E3%80%82">https://www.mintscan.io/cosmos/assets中可查。</a></td>
+</tr>
+<tr>
+<td align="center">amount</td>
+<td align="center">denom中填被转移的代币在目标链上的hash值</td>
+</tr>
+<tr>
+<td align="center">sender</td>
+<td align="center">发送者地址</td>
+</tr>
+<tr>
+<td align="center">receiver</td>
+<td align="center">接收者地址</td>
+</tr>
+<tr>
+<td align="center">timeoutHeight</td>
+<td align="center">有两个字段，一个是目标链的超时块高。一个不清楚。</td>
+</tr>
+<tr>
+<td align="center">sourceport</td>
+<td align="center">几个固定值，转移用transfer</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<img src="/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/token.png" class="">
+
+<h3 id="三、交易发送"><a href="#三、交易发送" class="headerlink" title="三、交易发送"></a>三、交易发送</h3><p>​		签名的输出中的serialized字段即为最终要发送的交易，是一个base64编码后的字段，广播交易的rpc地址是&#x2F;cosmos&#x2F;tx&#x2F;v1beta1&#x2F;txs，发送的请求要加上请求头’content-type’: ‘application&#x2F;json’（如果使用之前提到的第三方的节点，那么还要加上该网站分配的x-api-key）  发送格式为：</p>
+<img src="/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/1.png" class="">
+
+<p>​		tx_bytes是签名的serialized字段，mod有BLOCK、SYNC等，一般采用BLOCK。以下是交易签名的例子（图中的akt是一个代币，如果是atom，可以用uatom，1atom&#x3D;1000000uatom）：</p>
+<img src="/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/2.png" class="">
+
+<p>引用地址：</p>
+<p>官方api文档：<a target="_blank" rel="noopener" href="https://v1.cosmos.network/rpc/v0.45.1">https://v1.cosmos.network/rpc/v0.45.1</a></p>
+<p>浏览器：<a target="_blank" rel="noopener" href="https://getblock.io/">https://getblock.io</a></p>
+<p>keplr可以完成以上功能，并且在交易的确认界面可以选择查看原始交易，可以直接拿其中的字段拿来用。</p>
+<img src="/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/rawtx.png" class="">
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E5%8F%91%E9%80%81"><span class="toc-number">1.</span> <span class="toc-text">ATOM币交易发送</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%AF%A5%E9%93%BE%E7%89%B9%E5%BE%81"><span class="toc-number">1.0.1.</span> <span class="toc-text">一、该链特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AD%BE%E5%90%8D%E8%BF%87%E7%A8%8B"><span class="toc-number">1.0.2.</span> <span class="toc-text">二、签名过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BA%A4%E6%98%93%E5%8F%91%E9%80%81"><span class="toc-number">1.0.3.</span> <span class="toc-text">三、交易发送</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&text=ATOM币交易签名与发送"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&is_video=false&description=ATOM币交易签名与发送"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ATOM币交易签名与发送&body=Check out this article: http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&title=ATOM币交易签名与发送"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&name=ATOM币交易签名与发送&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/&t=ATOM币交易签名与发送"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2023
+    Mr.Guan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
