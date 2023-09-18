@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="ATOM币交易发送​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。 一、该链特征​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。 ​		2.所用的RPC节点应该也是采用的第三方的节点(https:&#x2F;&#x2F;getblock">
+    <meta name="description" content="ATOM币交易发送​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。  一、该链特征​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。 ​		2.所用的RPC节点应该也是采用的第三方的节点(https:&#x2F;&#x2F;getbloc">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ATOM币交易签名与发送">
 <meta property="og:url" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/index.html">
 <meta property="og:site_name" content="Nobody&#39;s Station">
-<meta property="og:description" content="ATOM币交易发送​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。 一、该链特征​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。 ​		2.所用的RPC节点应该也是采用的第三方的节点(https:&#x2F;&#x2F;getblock">
+<meta property="og:description" content="ATOM币交易发送​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。  一、该链特征​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。 ​		2.所用的RPC节点应该也是采用的第三方的节点(https:&#x2F;&#x2F;getbloc">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/ibcex.png">
 <meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/akthash.png">
@@ -20,7 +20,7 @@
 <meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/2.png">
 <meta property="og:image" content="http://jingboguan.github.io/2023/09/09/ATOM%E5%B8%81%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D%E4%B8%8E%E5%8F%91%E9%80%81/rawtx.png">
 <meta property="article:published_time" content="2023-09-09T02:25:42.000Z">
-<meta property="article:modified_time" content="2023-09-09T05:54:16.030Z">
+<meta property="article:modified_time" content="2023-09-10T12:24:44.781Z">
 <meta property="article:author" content="Mr.Guan">
 <meta property="article:tag" content="区块链">
 <meta name="twitter:card" content="summary">
@@ -166,6 +166,7 @@
 
   <div class="content e-content" itemprop="articleBody">
     <h1 id="ATOM币交易发送"><a href="#ATOM币交易发送" class="headerlink" title="ATOM币交易发送"></a>ATOM币交易发送</h1><p>​		最近帮公司看了一下ATOM链上的交易如何签名，这条链的学习过程还是挺坎坷的，同时也花了好多时间。首先这条链没有测试链，然后尝试获取测试币也出现了问题。最后只能让公司的姐姐帮我买了一些测试币o(TヘTo)。</p>
+<hr>
 <h3 id="一、该链特征"><a href="#一、该链特征" class="headerlink" title="一、该链特征"></a>一、该链特征</h3><p>​		1.COSMOS没有测试链，所有的交易实验只能在主网上进行实验。</p>
 <p>​		2.所用的RPC节点应该也是采用的第三方的节点(<a target="_blank" rel="noopener" href="https://getblock.io)./">https://getblock.io)。</a></p>
 <p>​		3.COSMOS支持IBC生态环境，所有支持IBC的链都可以相互将链上的资产转移到其它的链上。之后就被视为是一个代币，转账的交易费花费的是托管的链的币。</p>
