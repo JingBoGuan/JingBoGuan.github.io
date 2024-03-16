@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="《A Blockchain-Based PKI Management Framework》论文实验过程这篇论文提供了源码的Github仓库,但是最后一次维护已经是6年前了&#96;(╯°Д°)╯┻━┻，目前我可能已经将这个仓库的代码复现出来了，其中出现了一些问题，记录一下，以便以后可以回忆。 +++ 首先仓库中的文档写的及其简单，有很多东西都是我自家摸索+chatgpt搞明白的，也给自己提个醒，以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="区块链PKI系统论文复现总结">
+<meta property="og:url" content="http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Nobody&#39;s Station">
+<meta property="og:description" content="《A Blockchain-Based PKI Management Framework》论文实验过程这篇论文提供了源码的Github仓库,但是最后一次维护已经是6年前了&#96;(╯°Д°)╯┻━┻，目前我可能已经将这个仓库的代码复现出来了，其中出现了一些问题，记录一下，以便以后可以回忆。 +++ 首先仓库中的文档写的及其简单，有很多东西都是我自家摸索+chatgpt搞明白的，也给自己提个醒，以">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://jingboguan.github.io/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/PKI%E5%9B%BE.png">
+<meta property="article:published_time" content="2024-03-10T11:54:39.000Z">
+<meta property="article:modified_time" content="2024-03-10T11:54:39.000Z">
+<meta property="article:author" content="Mr.Guan">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://jingboguan.github.io/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/PKI%E5%9B%BE.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>区块链PKI系统论文复现总结</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&text=区块链PKI系统论文复现总结"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&is_video=false&description=区块链PKI系统论文复现总结"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=区块链PKI系统论文复现总结&body=Check out this article: http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&name=区块链PKI系统论文复现总结&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&t=区块链PKI系统论文复现总结"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AA-Blockchain-Based-PKI-Management-Framework%E3%80%8B%E8%AE%BA%E6%96%87%E5%AE%9E%E9%AA%8C%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">《A Blockchain-Based PKI Management Framework》论文实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OPENSSL%E7%94%9F%E6%88%90%E8%AF%81%E4%B9%A6"><span class="toc-number">1.0.1.</span> <span class="toc-text">OPENSSL生成证书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.1.</span> <span class="toc-text">程序中的接口</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        区块链PKI系统论文复现总结
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Mr.Guan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-03-10T11:54:39.000Z" class="dt-published" itemprop="datePublished">2024-03-10</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="《A-Blockchain-Based-PKI-Management-Framework》论文实验过程"><a href="#《A-Blockchain-Based-PKI-Management-Framework》论文实验过程" class="headerlink" title="《A Blockchain-Based PKI Management Framework》论文实验过程"></a>《A Blockchain-Based PKI Management Framework》论文实验过程</h1><p>这篇论文提供了源码的<a target="_blank" rel="noopener" href="https://github.com/snt-sedan/pki-blockchain">Github仓库</a>,但是最后一次维护已经是6年前了&#96;(╯°Д°)╯┻━┻，目前我<del>可能已经</del>将这个仓库的代码复现出来了，其中出现了一些问题，记录一下，以便以后可以回忆。</p>
+<p>+++</p>
+<p>首先仓库中的文档写的及其简单，有很多东西都是我自家摸索+chatgpt搞明白的，也给自己提个醒，以后不论是工作还是学习都要留下一份尽可能详细的文档，以便自己可以快速的复现当时的状态。</p>
+<p>首先文档中的go dep已经可以被淘汰了，我们直接用golang官方的包管理工具来下载依赖即可。go build只需在项目的本体文件夹中build即可，不需要像文档中所说的，要到geth的文件夹下修改。其中有些依赖已经换了，用代码说明一下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>(</span><br><span class="line"><span class="comment">// 已经失效，换下一个</span></span><br><span class="line"><span class="string">&quot;github.com/ethereum/go-ethereum/ethclient&quot;</span></span><br><span class="line"><span class="comment">// 用这个！！！</span></span><br><span class="line"><span class="string">&quot;golang.org/x/crypto/sha3&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">hasher := sha3.NewLegacyKeccak256()</span><br></pre></td></tr></table></figure>
+
+<p>然后就是智能合约与Golang的交互，我们需要根据Solidity文件编译出的文件，采用Geth官方的abigen工具生成go语言代码（仓库中的版本已经无法使用了）。只需要用最新的Geth官方工具中的abigen程序执行命令即可，但是需要注意，原来合约中的函数名称会变，在程序中修改一下就行。</p>
+<p>接下来是配置文件，需要解读以下每个字段的意思</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;contractHashOLD&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0xa422f3193fc5402702fbb5fac6bcc4cb42ccde0c&quot;</span><span class="punctuation">,</span> <span class="comment">// 没有用到</span></span><br><span class="line">  <span class="attr">&quot;contractWebHashOLD&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0xe6268ff92ed7b4eb08e7272ad1d49871d8befbcf&quot;</span><span class="punctuation">,</span> <span class="comment">// 没有用到</span></span><br><span class="line">  <span class="attr">&quot;contractHash&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0xBDA0EF7B5c0dbba1fE0Cf693a63A876aBFB5d0dE&quot;</span><span class="punctuation">,</span><span class="comment">// PKI部署的区块链地址</span></span><br><span class="line">  <span class="attr">&quot;contractWebHash&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0x1b0EFA6E5d4Db7F3f60f105C103AdB308666C0fe&quot;</span><span class="punctuation">,</span><span class="comment">// PKI-WEB部署的区块链地址</span></span><br><span class="line">  <span class="attr">&quot;nodeURL&quot;</span><span class="punctuation">:</span> <span class="string">&quot;HTTP://127.0.0.1:2001&quot;</span><span class="punctuation">,</span> <span class="comment">// 自己加的，用于连接区块链的RPC地址</span></span><br><span class="line">  <span class="attr">&quot;pswd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gjb&quot;</span><span class="punctuation">,</span><span class="comment">// 密码</span></span><br><span class="line">  <span class="attr">&quot;keyDir&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:\\Users\\78268\\AppData\\Local\\Ethereum\\keystore&quot;</span><span class="punctuation">,</span><span class="comment">// 还是要用geth生成的keystore</span></span><br><span class="line">  <span class="attr">&quot;accountAddr&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0xD9Ca9162582B77333E82007c57AfD85a7460d05C&quot;</span><span class="punctuation">,</span><span class="comment">// 地址</span></span><br><span class="line">  <span class="attr">&quot;keyFile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:\\Users\\78268\\AppData\\Local\\Ethereum\\keystore\\UTC--2024-03-01T02-13-29.733109700Z--d9ca9162582b77333e82007c57afd85a7460d05c&quot;</span><span class="punctuation">,</span><span class="comment">// 私钥文件</span></span><br><span class="line">  <span class="attr">&quot;privateKeyPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;private.key&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;appHttpPort&quot;</span><span class="punctuation">:</span> <span class="number">8081</span><span class="punctuation">,</span><span class="comment">// 与web相关的数据</span></span><br><span class="line">  <span class="attr">&quot;restHttpPort&quot;</span><span class="punctuation">:</span> <span class="number">8091</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ethereumRpcPort&quot;</span><span class="punctuation">:</span> <span class="number">2001</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;appUrlServer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://localhost&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;restUrlServer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://localhost&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ethereumRpcUrl&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://localhost&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;fileWebPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;D:\\goProject\\src\\pki-blockchain-master\\pub&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>官方采用的geth连接测试网进行的实验，我这边为了方便，在本地采用Ganache进行链接并进行实验。</p>
+<h3 id="OPENSSL生成证书"><a href="#OPENSSL生成证书" class="headerlink" title="OPENSSL生成证书"></a>OPENSSL生成证书</h3><p>实验中需要向智能合约中上传CA证书，因此我们需要用openssl生成证书，在此记录一下步骤。</p>
+<ul>
+<li>采用openssl进行CA证书生成或签署时需要进行一些配置，windows自带的ssl的配置文件目录应该在 C:\Program Files\Common Files\ssl中，根据cnf文件中的的[CA_DEFAULT]字段配置即可。其中，serial文件的生成命令和linux是一样的。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 00 &gt; serial <span class="comment"># 将00写入serial文件中</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生成CA（用户）的公私钥对</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out cakey.key <span class="comment"># 因为公钥是从私钥中派生出来，所以我们只要有私钥文件即可</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生成CA自签名证书</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -new -x509 -key cakey.key -days 365 -out cacert.pem <span class="comment">#生成CA的自签名证书</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>用户生成证书申请文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -new -key user.key -out user.csr <span class="comment"># 需要用户的私钥文件，csr是申请文件的后缀</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>CA签署证书</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl ca -<span class="keyword">in</span> user.csr -out user.crt -days 100 <span class="comment"># 需要输入两个yes</span></span><br></pre></td></tr></table></figure>
+
+<p>实际CA签名后的证书要添加一个额外的扩展，openssl的证书格式是要在openssl.cnf中进行修改的。扩展字段的名称是采用OID形式标志的。实际写法如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span> new_oids <span class="punctuation">]</span></span><br><span class="line"># 以下两个标志符的OID是等号右边的两类似网址的标识符</span><br><span class="line">parent_address = <span class="number">1.2</span><span class="number">.752</span><span class="number">.115</span><span class="number">.33</span><span class="number">.1</span></span><br><span class="line">ca_address = <span class="number">1.2</span><span class="number">.752</span><span class="number">.115</span><span class="number">.33</span><span class="number">.2</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">[</span> usr_cert <span class="punctuation">]</span></span><br><span class="line"># 将common.address.bytes()中的数字转换为<span class="number">16</span>进制跟在DER<span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">14</span>后</span><br><span class="line">parent_address=DER<span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">1</span>c<span class="punctuation">:</span>be<span class="punctuation">:</span><span class="number">49</span><span class="punctuation">:</span>f0<span class="punctuation">:</span><span class="number">33</span><span class="punctuation">:</span>a4<span class="punctuation">:</span><span class="number">16</span><span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">92</span><span class="punctuation">:</span><span class="number">12</span><span class="punctuation">:</span>bc<span class="punctuation">:</span>cc<span class="punctuation">:</span><span class="number">96</span><span class="punctuation">:</span><span class="number">81</span><span class="punctuation">:</span>f3<span class="punctuation">:</span><span class="number">53</span><span class="punctuation">:</span>d5<span class="punctuation">:</span>d5<span class="punctuation">:</span>f4<span class="punctuation">:</span><span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="程序中的接口"><a href="#程序中的接口" class="headerlink" title="程序中的接口"></a>程序中的接口</h2><p>文档中只有REST接口的介绍，根本没有如何使用该项目的说明，如何使用也是完全没有。所以根据文件中的注释以及我对PKI的理解，重新介绍一下这些接口参数的意义。</p>
+<p><img src="/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/PKI%E5%9B%BE.png"></p>
+<p>PKI的总体架构如上图所示：</p>
+<p>如果我们想部署第一个ROOT CA，首先要手动部署智能合约到区块链上（公链私链都行）。然后调用POPULATE接口将本地使用上述OPENSSL生成的CA证书填充到智能合约中。</p>
+<p>POPULATE<br>&#x2F;populate_contract, all parameters in POST</p>
+<p>填充部署到区块链上的智能合约:</p>
+<p>参数:</p>
+<ol>
+<li>UplFiles : 上传的证书</li>
+<li>NewUserAddr : 合约函数调用完成后会将合约中的owner更改为该参数（最开始只能由该合约的创造者修改该合约）</li>
+<li>CurrentUserAddr:修改该合约的地址（第一次就是该合约的创造者）</li>
+<li>ContrAddr: 要填充的合约的地址</li>
+</ol>
+<p>如果我们想创造一个subCA，就要先调用ROOT CA创造一个新的空合约。</p>
+<p>CREATE CONTRACT<br>&#x2F;create_contract, all params as POST</p>
+<p>Params:</p>
+<ol>
+<li>ParentAddr: 父CA的合约地址</li>
+<li>NewUserAddr - 子CA的拥有者，由父CA生成该合约，然后将拥有者移交子CA拥有者。</li>
+<li>CurrentUserAddr: 父CA的拥有者</li>
+</ol>
+<p>然后拥有者将自己的CA填充到智能合约中。</p>
+<p>如果想要加入一个普通的用户，则需要enroll_user</p>
+<p>ENROLL<br>&#x2F;enroll_user, all parameters in POST</p>
+<p>Parameters:</p>
+<ol>
+<li>Hash or UplFiles (hash is a hex string without a leading “0x”)</li>
+<li>UplFiles : 用户的证书（不用父CA再创建合约了）</li>
+<li>ParentAddr: 存储证书哈希的合约地址</li>
+<li>CurrentUserAddr: 可以修改证书哈希的地址，也就是CA的地址（和证书合约地址不同）</li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AA-Blockchain-Based-PKI-Management-Framework%E3%80%8B%E8%AE%BA%E6%96%87%E5%AE%9E%E9%AA%8C%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">《A Blockchain-Based PKI Management Framework》论文实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OPENSSL%E7%94%9F%E6%88%90%E8%AF%81%E4%B9%A6"><span class="toc-number">1.0.1.</span> <span class="toc-text">OPENSSL生成证书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.1.</span> <span class="toc-text">程序中的接口</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&text=区块链PKI系统论文复现总结"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&is_video=false&description=区块链PKI系统论文复现总结"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=区块链PKI系统论文复现总结&body=Check out this article: http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&title=区块链PKI系统论文复现总结"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&name=区块链PKI系统论文复现总结&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/&t=区块链PKI系统论文复现总结"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    Mr.Guan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
