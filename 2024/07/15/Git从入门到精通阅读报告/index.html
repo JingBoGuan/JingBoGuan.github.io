@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="《Gi t从入门到精通》阅读报告实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。 那么～～，拉取远程分支为何频频失败，好好的切换分支为何会出现断头（detach">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git从入门到精通阅读报告">
+<meta property="og:url" content="http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/index.html">
+<meta property="og:site_name" content="Nobody&#39;s Station">
+<meta property="og:description" content="《Gi t从入门到精通》阅读报告实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。 那么～～，拉取远程分支为何频频失败，好好的切换分支为何会出现断头（detach">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240814201816552.png">
+<meta property="article:published_time" content="2024-07-15T12:13:51.000Z">
+<meta property="article:modified_time" content="2024-07-15T12:13:51.000Z">
+<meta property="article:author" content="Mr.Guan">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240814201816552.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Git从入门到精通阅读报告</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2024/03/23/SpringBoot%E9%85%8D%E7%BD%AE%E5%A4%87%E5%BF%98/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&text=Git从入门到精通阅读报告"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&is_video=false&description=Git从入门到精通阅读报告"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Git从入门到精通阅读报告&body=Check out this article: http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&name=Git从入门到精通阅读报告&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&t=Git从入门到精通阅读报告"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AGi-t%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A"><span class="toc-number">1.</span> <span class="toc-text">《Gi t从入门到精通》阅读报告</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Git从入门到精通阅读报告
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Mr.Guan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-07-15T12:13:51.000Z" class="dt-published" itemprop="datePublished">2024-07-15</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag">区块链</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="《Gi-t从入门到精通》阅读报告"><a href="#《Gi-t从入门到精通》阅读报告" class="headerlink" title="《Gi t从入门到精通》阅读报告"></a>《Gi t从入门到精通》阅读报告</h1><p>实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。</p>
+<p>那么～～，拉取远程分支为何<strong>频频失败</strong>，好好的切换分支为何会出现<strong>断头（detach head）</strong>的情况。这一切的背后到底是%&amp;……<em>……</em>&amp;……Y（懒得写了），请看我如何分解。</p>
+<hr>
+<p>基础就不说了，说一些看这本书新学到的东西：</p>
+<ol>
+<li>为什么要先add再commit，直接commit不行吗：先add可以把许多修改集合起来再集中创建一个commit，否则commit会十分零碎。</li>
+<li>HEAD是什么：HEAD可以看作是一个标签，它贴在当前我们位于的分支上。在.git文件夹也会有一个文件名为HEAD的文件，内容是一个记录分支的文件路径。当切换分支时，HEAD文件中的路径会切换为别的分支文件的路径。</li>
+</ol>
+<img src="/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240814201816552.png" class="">
+
+<p>3.如果删掉一个文件，还没有add到暂存区，我们可以使用checkout+文件名将文件复原。checkout的意思是从暂存区中将一些文件或内容拿来覆盖工作目录。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AGi-t%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A"><span class="toc-number">1.</span> <span class="toc-text">《Gi t从入门到精通》阅读报告</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&text=Git从入门到精通阅读报告"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&is_video=false&description=Git从入门到精通阅读报告"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Git从入门到精通阅读报告&body=Check out this article: http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Git从入门到精通阅读报告"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&name=Git从入门到精通阅读报告&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&t=Git从入门到精通阅读报告"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    Mr.Guan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="《Effective C++中文版》阅读报告最近在实习期间读完了《Effective C++》这本书，这本书我是结合这《C++ Primer》这本书看完的。如果单独只看后者实在是令人有些昏昏欲睡，打算等正式工作后结合着工作内容再巩固《C++ Primer》这本书（毕竟算是一本工具书嘛，就像是字典一样）。  好记性不如烂笔头，接下来记录一下其中我理解的内容，以供日后快速重塑记忆（其实看完快二十多天了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective C++阅读报告">
+<meta property="og:url" content="http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/index.html">
+<meta property="og:site_name" content="Nobody&#39;s Station">
+<meta property="og:description" content="《Effective C++中文版》阅读报告最近在实习期间读完了《Effective C++》这本书，这本书我是结合这《C++ Primer》这本书看完的。如果单独只看后者实在是令人有些昏昏欲睡，打算等正式工作后结合着工作内容再巩固《C++ Primer》这本书（毕竟算是一本工具书嘛，就像是字典一样）。  好记性不如烂笔头，接下来记录一下其中我理解的内容，以供日后快速重塑记忆（其实看完快二十多天了">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-31T12:20:44.000Z">
+<meta property="article:modified_time" content="2024-07-31T12:20:44.000Z">
+<meta property="article:author" content="Mr.Guan">
+<meta property="article:tag" content="工作">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Effective C++阅读报告</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2024/07/15/Git%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&text=Effective C++阅读报告"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&is_video=false&description=Effective C++阅读报告"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Effective C++阅读报告&body=Check out this article: http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&name=Effective C++阅读报告&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&t=Effective C++阅读报告"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AEffective-C-%E4%B8%AD%E6%96%87%E7%89%88%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A"><span class="toc-number">1.</span> <span class="toc-text">《Effective C++中文版》阅读报告</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A9%E8%87%AA%E5%B7%B1%E4%B9%A0%E6%83%AFC"><span class="toc-number">1.0.1.</span> <span class="toc-text">让自己习惯C++</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0-%E6%9E%90%E6%9E%84-%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97"><span class="toc-number">1.0.2.</span> <span class="toc-text">构造&#x2F;析构&#x2F;赋值运算</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Effective C++阅读报告
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Mr.Guan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-07-31T12:20:44.000Z" class="dt-published" itemprop="datePublished">2024-07-31</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%B7%A5%E4%BD%9C/" rel="tag">工作</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="《Effective-C-中文版》阅读报告"><a href="#《Effective-C-中文版》阅读报告" class="headerlink" title="《Effective C++中文版》阅读报告"></a>《Effective C++中文版》阅读报告</h1><p>最近在实习期间读完了《Effective C++》这本书，这本书我是结合这《C++ Primer》这本书看完的。如果单独只看后者实在是令人有些昏昏欲睡，打算等正式工作后结合着工作内容再巩固《C++ Primer》这本书（毕竟算是一本工具书嘛，就像是字典一样）。  好记性不如烂笔头，接下来记录一下其中我理解的内容，以供日后快速重塑记忆（其实看完快二十多天了(⁄ ⁄•⁄ω⁄•⁄ ⁄)）。</p>
+<hr>
+<h3 id="让自己习惯C"><a href="#让自己习惯C" class="headerlink" title="让自己习惯C++"></a>让自己习惯C++</h3><ol>
+<li><p>将C++看作是多个次语言的结合，当从一个次语言转移到另一个次语言中，要遵守相关次语言的规约。主要的四个次语言：C（C++的基底：区块、语句、预处理器等概念）、C++(面向对象部分：封装、继承、多态)、模板类（template编程规范很少与主流编程模范相影响）、STL（template库）。</p>
+</li>
+<li><p>定义常量时，使用const、enum代替define。定义宏时，使用inline代替define。本条款还讨论了当定义指针的常量时，有常量指针（const pointer）和指向常量的指针(pointer to const)之间的区别（C++ Primer P56）。以及定义类中的静态常量时，只要我们不获取静态常量的地址，我们可以不需要类中的静态常量的定义式。</p>
+<p>**”the enum hacker”**，当编译器不允许“static整型class常量”完成“in class初值设定”，可以采用此方法绕过。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GamePlayer</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">static</span> <span class="type">int</span> GameTurn; <span class="comment">// 声明式</span></span><br><span class="line">    <span class="type">int</span> scores[GameTurn];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GamePalyer</span>&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"> 	<span class="keyword">enum</span>&#123; GameTurn = <span class="number">5</span> &#125;; <span class="comment">// the enum hacker</span></span><br><span class="line">    <span class="type">int</span> scores[GameTurn];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当用“define”定义宏时，有诸多的不便，可以采用inline来代替宏函数。这样既有define的性能，也可以实现更多的功能。</p>
+</li>
+<li><p>尽可能多用const。对于迭代器，如果用const修饰迭代器对象，效果类似常量指针（cosnt pointer）。即迭代器不能改变指向的东西，而指向的值是不能变的。如果想要指向的值不能变，应该使用const_interator。</p>
+<p>令函数的返回值为const，可以避免一些用户的错误，如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span>&#123;...&#125;;</span><br><span class="line"><span class="type">const</span> Rational <span class="keyword">operator</span>*(<span class="type">const</span> Rational &amp;lhs, <span class="type">const</span> Rational &amp;rhs); <span class="comment">// 避免出现a * b = c的情况</span></span><br></pre></td></tr></table></figure>
+
+<p>类成员函数也可以被定义为const，以供const变量使用</p>
+<p>。。。</p>
+</li>
+<li><p>确认对象在使用前已经被初始化。C++有时会默认初始化声明的变量，有时不会（C的部分可能不初始化，C++部分会初始化），因此注意所有变量自己手动初始化。</p>
+<p><strong>不要混淆赋值和初始化</strong>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PhoneNumber</span>&#123;...&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ABEntry</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ABEntry</span>(<span class="type">const</span> std::string&amp; name, <span class="type">const</span> std::string&amp; address, <span class="type">const</span> std::list&lt;PhoneNumber&gt;);</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string theName;</span><br><span class="line">    std::string the Address;</span><br><span class="line">    std::list&lt;PhoneNumber&gt; thePhones;</span><br><span class="line">    <span class="type">int</span> numTimesConsulted;</span><br><span class="line">&#125;;</span><br><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string&amp; name, <span class="type">const</span> std::string&amp; addres, <span class="type">const</span> std::list&lt;PhoneNumber&gt;&amp; phones)&#123;</span><br><span class="line">    theName = name; <span class="comment">//此为赋值</span></span><br><span class="line">    theAddress = address;</span><br><span class="line">    thePhones = phones;</span><br><span class="line">    numTimesConsulted = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>采用初始化列表初始化：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string&amp; name, <span class="type">const</span> std::string&amp; address, <span class="type">const</span> std::list&lt;PhoneNumber&gt;&amp; phones):<span class="built_in">theName</span>(name),<span class="built_in">theAddress</span>(address),<span class="built_in">thePhones</span>(phones),<span class="built_in">numTimesConsulted</span>(<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// 初始化列表</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="构造-析构-赋值运算"><a href="#构造-析构-赋值运算" class="headerlink" title="构造&#x2F;析构&#x2F;赋值运算"></a>构造&#x2F;析构&#x2F;赋值运算</h3><ol>
+<li>C++的编译器会默认的为一个类补全一个dafult默认构造函数，copy构造函数，copy assignment操作符，以及一个析构函数。当我想要阻止一个copy构造函数，可以自己声明一个该函数并将其定义为private的：</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 房地产（不能被复制）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HomeForSale</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>：</span><br><span class="line">        ...</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    	...</span><br><span class="line">    	<span class="built_in">HomeForSale</span>(<span class="type">const</span> HomeForSale&amp;);</span><br><span class="line">    	HomeForSale&amp; <span class="keyword">operator</span>=(<span class="type">const</span> HomeForSale&amp;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以写一个不可复制的基类，然后继承它：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Uncopyable</span>&#123;</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">    	<span class="built_in">uncopyable</span>() &#123;&#125;</span><br><span class="line">    	~<span class="built_in">Uncopyable</span>() &#123;&#125;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    	<span class="built_in">Uncopyable</span>(<span class="type">const</span> Uncopyable&amp;);</span><br><span class="line">    	Uncopyable&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Uncopyable&amp;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 继承该类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HomeForSale</span>: <span class="keyword">private</span> Uncopyable&#123;</span><br><span class="line">  	...  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>条款7涉及到virtual析构函数。在继承中，如果涉及到的类没有定义virtual析构函数，则可能导致base类消除的不彻底。但我们也不能滥用virtual析构函数，会导致内存使用增加，性能下降。</li>
+</ol>
+<p>​       <strong>这里存在一个之前没有搞明白的问题</strong>：</p>
+<ul>
+<li>虚函数表（vtable）：是一个指针数组，每个元素指向该类的一个虚函数实现。在程序运行时，用于实现多态行为，即根据实际对象的类型调用正确的虚函数。</li>
+<li>虚函数表指针（vptr）：每个包含虚函数的类的对象中，会包含一个指向该类虚函数表的指针，即虚函数表指针（vptr）。这个指针通常是对象的一个隐藏成员，由编译器自动生成和维护。虚函数表本身则是全局的，每个类只有一个虚函数表。</li>
+</ul>
+<ol start="3">
+<li>条款89涉及到析构函数，目前涉及到的不多，没什么体会，日后改。</li>
+<li></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AEffective-C-%E4%B8%AD%E6%96%87%E7%89%88%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A"><span class="toc-number">1.</span> <span class="toc-text">《Effective C++中文版》阅读报告</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A9%E8%87%AA%E5%B7%B1%E4%B9%A0%E6%83%AFC"><span class="toc-number">1.0.1.</span> <span class="toc-text">让自己习惯C++</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0-%E6%9E%90%E6%9E%84-%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97"><span class="toc-number">1.0.2.</span> <span class="toc-text">构造&#x2F;析构&#x2F;赋值运算</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&text=Effective C++阅读报告"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&is_video=false&description=Effective C++阅读报告"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Effective C++阅读报告&body=Check out this article: http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&title=Effective C++阅读报告"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&name=Effective C++阅读报告&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/07/31/Effective-C-%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/&t=Effective C++阅读报告"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    Mr.Guan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
