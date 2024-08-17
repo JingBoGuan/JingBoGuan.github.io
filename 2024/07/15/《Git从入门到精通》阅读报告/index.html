@@ -6,14 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="《Git从入门到精通》阅读报告实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。 那么～～，拉取远程分支为何频频失败，好好的切换分支为何会出现断头（detach h">
+    <meta name="description" content="实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。 那么～～，拉取远程分支为何频频失败，好好的切换分支为何会出现断头（detach head）的情况。这一切的背后到">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Git从入门到精通》阅读报告">
 <meta property="og:url" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/index.html">
 <meta property="og:site_name" content="Nobody&#39;s Station">
-<meta property="og:description" content="《Git从入门到精通》阅读报告实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。 那么～～，拉取远程分支为何频频失败，好好的切换分支为何会出现断头（detach h">
+<meta property="og:description" content="实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。 那么～～，拉取远程分支为何频频失败，好好的切换分支为何会出现断头（detach head）的情况。这一切的背后到">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240814201816552.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817085854055.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817090502287.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817091649485.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817092018729.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/tree.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/commit1.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817100110185.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/commit2.png">
 <meta property="article:published_time" content="2024-07-15T12:13:51.000Z">
 <meta property="article:modified_time" content="2024-07-15T12:13:51.000Z">
 <meta property="article:author" content="Mr.Guan">
@@ -84,7 +92,7 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="上一篇" href="/2024/07/31/%E3%80%8AEffective-C-%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="上一篇" href="/2024/07/31/%E3%80%8AEffective-C++%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A-%E4%B8%8A/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="下一篇" href="/2024/03/23/SpringBoot%E9%85%8D%E7%BD%AE%E5%A4%87%E5%BF%98/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -117,7 +125,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A"><span class="toc-number">1.</span> <span class="toc-text">《Git从入门到精通》阅读报告</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Git%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">Git基本原理</span></a></li></ol>
       </div>
     
   </span>
@@ -162,7 +170,7 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1 id="《Git从入门到精通》阅读报告"><a href="#《Git从入门到精通》阅读报告" class="headerlink" title="《Git从入门到精通》阅读报告"></a>《Git从入门到精通》阅读报告</h1><p>实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。</p>
+    <p>实习开始，利用休息时间看了《Git从入门到精通》。Git之前也断断续续学了不少，但是从来没有系统性的去了解原理。Git感觉一些功能定义得挺细的，这也意味着其学起来比较繁琐。这本书之前看过一次，但是是实验室公共的书，后来被拿走了。这本书主要利用画图的方式，将Git的一些实现描述的很清楚。</p>
 <p>那么～～，拉取远程分支为何<strong>频频失败</strong>，好好的切换分支为何会出现<strong>断头（detach head）</strong>的情况。这一切的背后到底是%&amp;……<em>……</em>&amp;……Y（懒得写了），请看我如何分解。</p>
 <hr>
 <p>基础就不说了，说一些看这本书新学到的东西：</p>
@@ -172,7 +180,58 @@
 </ol>
 <img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240814201816552.png" class="">
 
-<p>3.如果删掉一个文件，还没有add到暂存区，我们可以使用checkout+文件名将文件复原。checkout的意思是从暂存区中将一些文件或内容拿来覆盖工作目录。</p>
+<ol start="3">
+<li>如果删掉一个文件，还没有add到暂存区，我们可以使用checkout+文件名将文件复原。checkout的意思是从暂存区中将一些文件或内容拿来覆盖工作目录。</li>
+</ol>
+<h3 id="Git基本原理"><a href="#Git基本原理" class="headerlink" title="Git基本原理"></a>Git基本原理</h3><p>这本书画了不少图来说明Git原理，感觉受益良多，特此总结一下。</p>
+<p>先创建一个文件夹</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;hello world&quot;</span> &gt; index.html</span><br></pre></td></tr></table></figure>
+
+<p>然后git init后.git文件夹长这样：</p>
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817085854055.png" class="">
+
+<p>之后将创建的文件加入暂存区，objects文件夹会多出一个文件夹，里面有一个文件</p>
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817090502287.png" class="">
+
+<p>实际上文件夹名加上文件名是文件内容的sha1哈希：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | git hash-object --stdin</span><br><span class="line">3b18e512dba79e4c8300dd08aeb37f8e728b8dad</span><br></pre></td></tr></table></figure>
+
+<p>这个文件的内容是经过Git压缩算法过的内容。</p>
+<p>创建一个文件夹并加入暂存区：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir config</span><br><span class="line">git add .</span><br></pre></td></tr></table></figure>
+
+<p>会发现.git中没有变化，因为git只对文件内容敏感，而这个文件夹是空的，所以git无法捕获。</p>
+<p>在config文件夹中创建一个文件,并加入暂存区：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch database.yml</span><br><span class="line">git add .</span><br></pre></td></tr></table></figure>
+
+<p>文件夹有了变动：</p>
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817091649485.png" class="">
+
+<p>书中的意思是空的文件夹是空的，而空的文件内容则算是有“空的内容”，所以会被侦测到。</p>
+<p>接下来进行commit：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m &quot;first&quot;</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817092018729.png" class="">
+
+<p>变化大了，我们用git官方工具看一下新增文件内容是啥：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">git cat-file -t 070e0af7e3f0abef3dd99775be30be1d23183ebc</span><br><span class="line">tree</span><br><span class="line">git cat-file -t 79f9bb5a4fc8d962ac71b75d3fe247e47159fae4</span><br><span class="line">commit</span><br><span class="line">git cat-file -t a618ce33da8d21bca841f18e6432fcabf15d4477</span><br><span class="line">tree</span><br><span class="line">git cat-file -p 070e0af7e3f0abef3dd99775be30be1d23183ebc</span><br><span class="line">040000 tree a618ce33da8d21bca841f18e6432fcabf15d4477	config</span><br><span class="line">100644 blob 3b18e512dba79e4c8300dd08aeb37f8e728b8dad	index.html</span><br><span class="line">git cat-file -p a618ce33da8d21bca841f18e6432fcabf15d4477</span><br><span class="line">100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	database.yml</span><br><span class="line">git cat-file -p 79f9bb5a4fc8d962ac71b75d3fe247e47159fae4</span><br><span class="line">tree 070e0af7e3f0abef3dd99775be30be1d23183ebc</span><br></pre></td></tr></table></figure>
+
+<p>tree对象用图可以表示成这样：</p>
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/tree.png" class="">
+
+<p>加上commit是这样：</p>
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/commit1.png" class="">
+
+<p>接下来修改index.html,再commit一次：</p>
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/image-20240817100110185.png" class="">
+
+<p>多了三个文件夹，看一下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git cat-file -p 2fe8fad116981256a351e1fcca5950e3b5492178</span><br><span class="line">tree c46bc13910433437e098c50c387641c3554cdfa6</span><br><span class="line">git cat-file -p c46bc13910433437e098c50c387641c3554cdfa6</span><br><span class="line">040000 tree a618ce33da8d21bca841f18e6432fcabf15d4477	config</span><br><span class="line">100644 blob 25c2c9e6d2f28a09e3385bad53aa6b5e20c856d2	index.html</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，新的commit包含一个新的tree，新的tree包含新的index.html。</p>
+<img src="/2024/07/15/%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A/commit2.png" class="">
+
+<p>同时可以看到，分支其实是一个标签，贴在了一个commit上，head也是一个标签贴在了分支标签上。当head没有贴在一个分支标签上，就进入了detach head状态。</p>
 
   </div>
 </article>
@@ -200,7 +259,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8AGit%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E3%80%8B%E9%98%85%E8%AF%BB%E6%8A%A5%E5%91%8A"><span class="toc-number">1.</span> <span class="toc-text">《Git从入门到精通》阅读报告</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Git%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">Git基本原理</span></a></li></ol>
       </div>
     
 
