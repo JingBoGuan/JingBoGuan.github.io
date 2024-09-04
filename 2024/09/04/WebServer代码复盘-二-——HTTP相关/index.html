@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="WebServer代码复盘(二)——HTTP相关HTTP部分涉及到三个类，分别是HTTP请求类，HTTP响应类，HTTP连接类。下面分开看一下： +++ HTTP请求类整体流程涉及到从缓冲区中获取数据，并解析出需要的信息。首先先定义一下状态机中应用到的状态： 123456enum PARSE_STATE &amp;#123;        REQUEST_LINE, &#x2F;&#x2F; 请求行        HEADE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebServer代码复盘(二)——HTTP相关">
+<meta property="og:url" content="http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/index.html">
+<meta property="og:site_name" content="Nobody&#39;s Station">
+<meta property="og:description" content="WebServer代码复盘(二)——HTTP相关HTTP部分涉及到三个类，分别是HTTP请求类，HTTP响应类，HTTP连接类。下面分开看一下： +++ HTTP请求类整体流程涉及到从缓冲区中获取数据，并解析出需要的信息。首先先定义一下状态机中应用到的状态： 123456enum PARSE_STATE &amp;#123;        REQUEST_LINE, &#x2F;&#x2F; 请求行        HEADE">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-09-04T13:30:55.000Z">
+<meta property="article:modified_time" content="2024-09-04T13:30:55.000Z">
+<meta property="article:author" content="Mr.Guan">
+<meta property="article:tag" content="工作">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>WebServer代码复盘(二)——HTTP相关</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&text=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&is_video=false&description=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WebServer代码复盘(二)——HTTP相关&body=Check out this article: http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&name=WebServer代码复盘(二)——HTTP相关&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&t=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3"><span class="toc-number">1.</span> <span class="toc-text">WebServer代码复盘(二)——HTTP相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E8%AF%B7%E6%B1%82%E7%B1%BB"><span class="toc-number">1.0.1.</span> <span class="toc-text">HTTP请求类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87%E6%9E%84%E9%80%A0"><span class="toc-number">1.0.2.</span> <span class="toc-text">响应报文构造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E8%BF%9E%E6%8E%A5%E7%B1%BB"><span class="toc-number">1.0.3.</span> <span class="toc-text">HTTP连接类</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        WebServer代码复盘(二)——HTTP相关
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Mr.Guan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-09-04T13:30:55.000Z" class="dt-published" itemprop="datePublished">2024-09-04</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%B7%A5%E4%BD%9C/" rel="tag">工作</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="WebServer代码复盘-二-——HTTP相关"><a href="#WebServer代码复盘-二-——HTTP相关" class="headerlink" title="WebServer代码复盘(二)——HTTP相关"></a>WebServer代码复盘(二)——HTTP相关</h1><p>HTTP部分涉及到三个类，分别是HTTP请求类，HTTP响应类，HTTP连接类。下面分开看一下：</p>
+<p>+++</p>
+<h3 id="HTTP请求类"><a href="#HTTP请求类" class="headerlink" title="HTTP请求类"></a>HTTP请求类</h3><p>整体流程涉及到从缓冲区中获取数据，并解析出需要的信息。首先先定义一下状态机中应用到的状态：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">PARSE_STATE</span> &#123;</span><br><span class="line">        REQUEST_LINE, <span class="comment">// 请求行</span></span><br><span class="line">        HEADERS, <span class="comment">// 请求头</span></span><br><span class="line">        BODY, <span class="comment">// 请求体</span></span><br><span class="line">        FINISH, <span class="comment">// 结束        </span></span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>接下来从缓冲区中取出信息，并根据状态进行请求数据的解析：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">HttpRequest::parse</span><span class="params">(Buffer&amp; buff)</span> </span>&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> CRLF[] = <span class="string">&quot;\r\n&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span>(buff.<span class="built_in">ReadableBytes</span>() &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(buff.<span class="built_in">ReadableBytes</span>() &amp;&amp; state_ != FINISH) &#123;</span><br><span class="line">        <span class="type">const</span> <span class="type">char</span>* lineEnd = <span class="built_in">search</span>(buff.<span class="built_in">Peek</span>(), buff.<span class="built_in">BeginWriteConst</span>(), CRLF, CRLF + <span class="number">2</span>);</span><br><span class="line">        <span class="function">std::string <span class="title">line</span><span class="params">(buff.Peek(), lineEnd)</span></span>;</span><br><span class="line">        <span class="keyword">switch</span>(state_)</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">case</span> REQUEST_LINE:</span><br><span class="line">            <span class="comment">// 解析请求行</span></span><br><span class="line">            <span class="keyword">if</span>(!<span class="built_in">ParseRequestLine_</span>(line)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 解析路径</span></span><br><span class="line">            <span class="built_in">ParsePath_</span>();</span><br><span class="line">            <span class="keyword">break</span>;    </span><br><span class="line">        <span class="keyword">case</span> HEADERS:</span><br><span class="line">            <span class="comment">// 解析请求行</span></span><br><span class="line">            <span class="built_in">ParseHeader_</span>(line);</span><br><span class="line">            <span class="keyword">if</span>(buff.<span class="built_in">ReadableBytes</span>() &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">                state_ = FINISH;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> BODY:</span><br><span class="line">            <span class="comment">// 解析请求体</span></span><br><span class="line">            <span class="built_in">ParseBody_</span>(line);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(lineEnd == buff.<span class="built_in">BeginWrite</span>()) &#123; <span class="keyword">break</span>; &#125;</span><br><span class="line">        buff.<span class="built_in">RetrieveUntil</span>(lineEnd + <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">LOG_DEBUG</span>(<span class="string">&quot;[%s], [%s], [%s]&quot;</span>, method_.<span class="built_in">c_str</span>(), path_.<span class="built_in">c_str</span>(), version_.<span class="built_in">c_str</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来是各个函数的内容，采用正则表达式来解析请求内容:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">HTTPRequest::ParseRequestLine_</span><span class="params">(<span class="type">const</span> string&amp; line)</span></span>&#123;</span><br><span class="line">    <span class="function">regex <span class="title">patten</span><span class="params">(<span class="string">&quot;^([^ ]*) ([^ ]*) HTTP/([^ ]*)$&quot;</span>)</span></span>;</span><br><span class="line">    smatch subMatch;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">regex_match</span>(line, subMatch, patten))&#123;</span><br><span class="line">        method_ = subMatch[<span class="number">1</span>];</span><br><span class="line">        path_ = subMatch[<span class="number">2</span>];</span><br><span class="line">        version_ = subMatch[<span class="number">3</span>];</span><br><span class="line">        <span class="comment">// 状态转移</span></span><br><span class="line">        state_ = HEADERS;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;RequestLine Error&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">HttpRequest::ParseHeader_</span><span class="params">(<span class="type">const</span> string&amp; line)</span> </span>&#123;</span><br><span class="line">    <span class="function">regex <span class="title">patten</span><span class="params">(<span class="string">&quot;^([^:]*): ?(.*)$&quot;</span>)</span></span>;</span><br><span class="line">    smatch subMatch;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">regex_match</span>(line, subMatch, patten)) &#123;</span><br><span class="line">        header_[subMatch[<span class="number">1</span>]] = subMatch[<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        state_ = BODY;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">HttpRequest::ParseBody_</span><span class="params">(<span class="type">const</span> string&amp; line)</span> </span>&#123;</span><br><span class="line">    body_ = line;</span><br><span class="line">    <span class="built_in">ParsePost_</span>();</span><br><span class="line">    <span class="comment">// 状态转移</span></span><br><span class="line">    state_ = FINISH;</span><br><span class="line">    <span class="built_in">LOG_DEBUG</span>(<span class="string">&quot;Body:%s, len:%d&quot;</span>, line.<span class="built_in">c_str</span>(), line.<span class="built_in">size</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上是请求报文解析的大体流程</p>
+<h3 id="响应报文构造"><a href="#响应报文构造" class="headerlink" title="响应报文构造"></a>响应报文构造</h3><p>响应报文包括状态行 响应头 响应体，同时还要设置状态码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">HttpResponse::MakeResponse</span><span class="params">(Buffer&amp; buff)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* 判断请求的资源文件 */</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">stat</span>((srcDir_ + path_).<span class="built_in">data</span>(), &amp;mmFileStat_) &lt; <span class="number">0</span> || <span class="built_in">S_ISDIR</span>(mmFileStat_.st_mode)) &#123;</span><br><span class="line">        code_ = <span class="number">404</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(!(mmFileStat_.st_mode &amp; S_IROTH)) &#123;</span><br><span class="line">        code_ = <span class="number">403</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(code_ == <span class="number">-1</span>) &#123; </span><br><span class="line">        code_ = <span class="number">200</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">ErrorHtml_</span>();</span><br><span class="line">    <span class="comment">// 设置状态行</span></span><br><span class="line">    <span class="built_in">AddStateLine_</span>(buff);</span><br><span class="line">    <span class="comment">// 设置响应头</span></span><br><span class="line">    <span class="built_in">AddHeader_</span>(buff);</span><br><span class="line">    <span class="comment">// 设置响应体</span></span><br><span class="line">    <span class="built_in">AddContent_</span>(buff);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>填充响应报文：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">HttpResponse::AddStateLine_</span><span class="params">(Buffer&amp; buff)</span> </span>&#123;</span><br><span class="line">    string status;</span><br><span class="line">    <span class="keyword">if</span>(CODE_STATUS.<span class="built_in">count</span>(code_) == <span class="number">1</span>) &#123;</span><br><span class="line">        status = CODE_STATUS.<span class="built_in">find</span>(code_)-&gt;second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        code_ = <span class="number">400</span>;</span><br><span class="line">        status = CODE_STATUS.<span class="built_in">find</span>(<span class="number">400</span>)-&gt;second;</span><br><span class="line">    &#125;</span><br><span class="line">    buff.<span class="built_in">Append</span>(<span class="string">&quot;HTTP/1.1 &quot;</span> + <span class="built_in">to_string</span>(code_) + <span class="string">&quot; &quot;</span> + status + <span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">HttpResponse::AddHeader_</span><span class="params">(Buffer&amp; buff)</span> </span>&#123;</span><br><span class="line">    buff.<span class="built_in">Append</span>(<span class="string">&quot;Connection: &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(isKeepAlive_) &#123;</span><br><span class="line">        buff.<span class="built_in">Append</span>(<span class="string">&quot;keep-alive\r\n&quot;</span>);</span><br><span class="line">        buff.<span class="built_in">Append</span>(<span class="string">&quot;keep-alive: max=6, timeout=120\r\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">        buff.<span class="built_in">Append</span>(<span class="string">&quot;close\r\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    buff.<span class="built_in">Append</span>(<span class="string">&quot;Content-type: &quot;</span> + <span class="built_in">GetFileType_</span>() + <span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">HttpResponse::AddContent_</span><span class="params">(Buffer&amp; buff)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> srcFd = <span class="built_in">open</span>((srcDir_ + path_).<span class="built_in">data</span>(), O_RDONLY);</span><br><span class="line">    <span class="keyword">if</span>(srcFd &lt; <span class="number">0</span>) &#123; </span><br><span class="line">        <span class="built_in">ErrorContent</span>(buff, <span class="string">&quot;File NotFound!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 将文件映射到内存提高文件的访问速度 </span></span><br><span class="line"><span class="comment">        MAP_PRIVATE 建立一个写入时拷贝的私有映射*/</span></span><br><span class="line">    <span class="built_in">LOG_DEBUG</span>(<span class="string">&quot;file path %s&quot;</span>, (srcDir_ + path_).<span class="built_in">data</span>());</span><br><span class="line">    <span class="type">int</span>* mmRet = (<span class="type">int</span>*)<span class="built_in">mmap</span>(<span class="number">0</span>, mmFileStat_.st_size, PROT_READ, MAP_PRIVATE, srcFd, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(*mmRet == <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="built_in">ErrorContent</span>(buff, <span class="string">&quot;File NotFound!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    mmFile_ = (<span class="type">char</span>*)mmRet;</span><br><span class="line">    <span class="built_in">close</span>(srcFd);</span><br><span class="line">    buff.<span class="built_in">Append</span>(<span class="string">&quot;Content-length: &quot;</span> + <span class="built_in">to_string</span>(mmFileStat_.st_size) + <span class="string">&quot;\r\n\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="HTTP连接类"><a href="#HTTP连接类" class="headerlink" title="HTTP连接类"></a>HTTP连接类</h3><p>所有对象共享三个变量，分别是触发方式、源文件夹、用户数量</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">bool</span> isET;</span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="type">char</span>* srcDir;</span><br><span class="line"><span class="type">static</span> std::atomic&lt;<span class="type">int</span>&gt; userCount;</span><br></pre></td></tr></table></figure>
+
+<p>连接类是要放在线程池中使用的，因此主要涉及到写与读的问题，由于采用ET触发的方式，在读与写的过程中要采用while循环一次将数据读尽：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">HttpConn::read</span><span class="params">(<span class="type">int</span>* saveErrno)</span> </span>&#123;</span><br><span class="line">    <span class="type">ssize_t</span> len = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        len = readBuff_.<span class="built_in">ReadFd</span>(fd_, saveErrno);</span><br><span class="line">        <span class="keyword">if</span> (len &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (isET);</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">HttpConn::write</span><span class="params">(<span class="type">int</span>* saveErrno)</span> </span>&#123;</span><br><span class="line">    <span class="type">ssize_t</span> len = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        len = <span class="built_in">writev</span>(fd_, iov_, iovCnt_);</span><br><span class="line">        <span class="keyword">if</span>(len &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            *saveErrno = errno;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(iov_[<span class="number">0</span>].iov_len + iov_[<span class="number">1</span>].iov_len  == <span class="number">0</span>) &#123; <span class="keyword">break</span>; &#125; <span class="comment">/* 传输结束 */</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">static_cast</span>&lt;<span class="type">size_t</span>&gt;(len) &gt; iov_[<span class="number">0</span>].iov_len) &#123;</span><br><span class="line">            iov_[<span class="number">1</span>].iov_base = (<span class="type">uint8_t</span>*) iov_[<span class="number">1</span>].iov_base + (len - iov_[<span class="number">0</span>].iov_len);</span><br><span class="line">            iov_[<span class="number">1</span>].iov_len -= (len - iov_[<span class="number">0</span>].iov_len);</span><br><span class="line">            <span class="keyword">if</span>(iov_[<span class="number">0</span>].iov_len) &#123;</span><br><span class="line">                writeBuff_.<span class="built_in">RetrieveAll</span>();</span><br><span class="line">                iov_[<span class="number">0</span>].iov_len = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            iov_[<span class="number">0</span>].iov_base = (<span class="type">uint8_t</span>*)iov_[<span class="number">0</span>].iov_base + len; </span><br><span class="line">            iov_[<span class="number">0</span>].iov_len -= len; </span><br><span class="line">            writeBuff_.<span class="built_in">Retrieve</span>(len);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span>(isET || <span class="built_in">ToWriteBytes</span>() &gt; <span class="number">10240</span>);</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来是在线程池中的流程：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">HttpConn::process</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 初始化请求类</span></span><br><span class="line">    request_.<span class="built_in">Init</span>();</span><br><span class="line">    <span class="keyword">if</span>(readBuff_.<span class="built_in">ReadableBytes</span>() &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(request_.<span class="built_in">parse</span>(readBuff_)) &#123;</span><br><span class="line">        <span class="built_in">LOG_DEBUG</span>(<span class="string">&quot;%s&quot;</span>, request_.<span class="built_in">path</span>().<span class="built_in">c_str</span>());</span><br><span class="line">        <span class="comment">// 根据请求中的设置初始化响应类</span></span><br><span class="line">        response_.<span class="built_in">Init</span>(srcDir, request_.<span class="built_in">path</span>(), request_.<span class="built_in">IsKeepAlive</span>(), <span class="number">200</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        response_.<span class="built_in">Init</span>(srcDir, request_.<span class="built_in">path</span>(), <span class="literal">false</span>, <span class="number">400</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    response_.<span class="built_in">MakeResponse</span>(writeBuff_);</span><br><span class="line">    <span class="comment">/* 响应头 */</span></span><br><span class="line">    iov_[<span class="number">0</span>].iov_base = <span class="built_in">const_cast</span>&lt;<span class="type">char</span>*&gt;(writeBuff_.<span class="built_in">Peek</span>());</span><br><span class="line">    iov_[<span class="number">0</span>].iov_len = writeBuff_.<span class="built_in">ReadableBytes</span>();</span><br><span class="line">    iovCnt_ = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 文件 */</span></span><br><span class="line">    <span class="keyword">if</span>(response_.<span class="built_in">FileLen</span>() &gt; <span class="number">0</span>  &amp;&amp; response_.<span class="built_in">File</span>()) &#123;</span><br><span class="line">        iov_[<span class="number">1</span>].iov_base = response_.<span class="built_in">File</span>();</span><br><span class="line">        iov_[<span class="number">1</span>].iov_len = response_.<span class="built_in">FileLen</span>();</span><br><span class="line">        iovCnt_ = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">LOG_DEBUG</span>(<span class="string">&quot;filesize:%d, %d  to %d&quot;</span>, response_.<span class="built_in">FileLen</span>() , iovCnt_, <span class="built_in">ToWriteBytes</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3"><span class="toc-number">1.</span> <span class="toc-text">WebServer代码复盘(二)——HTTP相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E8%AF%B7%E6%B1%82%E7%B1%BB"><span class="toc-number">1.0.1.</span> <span class="toc-text">HTTP请求类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87%E6%9E%84%E9%80%A0"><span class="toc-number">1.0.2.</span> <span class="toc-text">响应报文构造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E8%BF%9E%E6%8E%A5%E7%B1%BB"><span class="toc-number">1.0.3.</span> <span class="toc-text">HTTP连接类</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&text=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&is_video=false&description=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WebServer代码复盘(二)——HTTP相关&body=Check out this article: http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&title=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&name=WebServer代码复盘(二)——HTTP相关&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98-%E4%BA%8C-%E2%80%94%E2%80%94HTTP%E7%9B%B8%E5%85%B3/&t=WebServer代码复盘(二)——HTTP相关"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2022-2024
+    Mr.Guan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://gitee.com/Gjb2000/projects">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
