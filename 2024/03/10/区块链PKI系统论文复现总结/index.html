@@ -13,13 +13,13 @@
 <meta property="og:site_name" content="Nobody&#39;s Station">
 <meta property="og:description" content="《A Blockchain-Based PKI Management Framework》论文实验过程这篇论文提供了源码的Github仓库,但是最后一次维护已经是6年前了&#96;(╯°Д°)╯┻━┻，目前我可能已经将这个仓库的代码复现出来了，其中出现了一些问题，记录一下，以便以后可以回忆。 +++ 首先仓库中的文档写的及其简单，有很多东西都是我自家摸索+chatgpt搞明白的，也给自己提个醒，以">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/1.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/1.png">
 <meta property="article:published_time" content="2024-03-10T11:54:39.000Z">
 <meta property="article:modified_time" content="2024-03-10T11:54:39.000Z">
 <meta property="article:author" content="Mr.Guan">
 <meta property="article:tag" content="区块链">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/1.png">
+<meta name="twitter:image" content="http://jingboguan.github.io/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/1.png">
     
     
       
@@ -203,7 +203,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span> new_oids <span class="punctuation">]</span></span><br><span class="line"># 以下两个标志符的OID是等号右边的两类似网址的标识符</span><br><span class="line">parent_address = <span class="number">1.2</span><span class="number">.752</span><span class="number">.115</span><span class="number">.33</span><span class="number">.1</span></span><br><span class="line">ca_address = <span class="number">1.2</span><span class="number">.752</span><span class="number">.115</span><span class="number">.33</span><span class="number">.2</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">[</span> usr_cert <span class="punctuation">]</span></span><br><span class="line"># 将common.address.bytes()中的数字转换为<span class="number">16</span>进制跟在DER<span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">14</span>后</span><br><span class="line">parent_address=DER<span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">1</span>c<span class="punctuation">:</span>be<span class="punctuation">:</span><span class="number">49</span><span class="punctuation">:</span>f0<span class="punctuation">:</span><span class="number">33</span><span class="punctuation">:</span>a4<span class="punctuation">:</span><span class="number">16</span><span class="punctuation">:</span><span class="number">14</span><span class="punctuation">:</span><span class="number">92</span><span class="punctuation">:</span><span class="number">12</span><span class="punctuation">:</span>bc<span class="punctuation">:</span>cc<span class="punctuation">:</span><span class="number">96</span><span class="punctuation">:</span><span class="number">81</span><span class="punctuation">:</span>f3<span class="punctuation">:</span><span class="number">53</span><span class="punctuation">:</span>d5<span class="punctuation">:</span>d5<span class="punctuation">:</span>f4<span class="punctuation">:</span><span class="number">10</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="程序中的接口"><a href="#程序中的接口" class="headerlink" title="程序中的接口"></a>程序中的接口</h3><p>文档中只有REST接口的介绍，根本没有如何使用该项目的说明，如何使用也是完全没有。所以根据文件中的注释以及我对PKI的理解，重新介绍一下这些接口参数的意义。</p>
-<img src="/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/1.png" class>
+<img src="/2024/03/10/%E5%8C%BA%E5%9D%97%E9%93%BEPKI%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/1.png" class>
 
 <p>PKI的总体架构如上图所示：</p>
 <p>如果我们想部署第一个ROOT CA，首先要手动部署智能合约到区块链上（公链私链都行）。然后调用POPULATE接口将本地使用上述OPENSSL生成的CA证书填充到智能合约中。</p>
