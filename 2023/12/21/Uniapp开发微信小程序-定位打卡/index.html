@@ -13,19 +13,19 @@
 <meta property="og:site_name" content="Nobody&#39;s Station">
 <meta property="og:description" content="Uniapp开发微信小程序-定位打卡 ​	Uniapp可以采用Vue前端框架实现多种移动端程序的前端，是我继Flutter后再次接触到的多端开发程序。本文记录了实际上手开发中遇到的问题及解决方法，以备以后再遇到这些问题。 UniappIDE配置及前期准备​	微信公众平台上申请一个小程序的开发权限，之后即可在设置中看到自己的小程序的AppID。信息备注只要完成前两个即可。     ​	此外，还需在[">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE1.png">
-<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE2.png">
-<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE3.png">
-<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E4%BD%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.png">
-<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E9%85%8D%E9%A2%9D%E5%88%86%E9%85%8D.png">
-<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/key%E8%AE%BE%E7%BD%AE.png">
-<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/SDK%E5%AF%BC%E5%85%A5.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE1.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE2.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE3.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E4%BD%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E9%85%8D%E9%A2%9D%E5%88%86%E9%85%8D.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/key%E8%AE%BE%E7%BD%AE.png">
+<meta property="og:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/SDK%E5%AF%BC%E5%85%A5.png">
 <meta property="article:published_time" content="2023-12-21T13:13:05.000Z">
 <meta property="article:modified_time" content="2023-12-21T13:13:05.000Z">
 <meta property="article:author" content="Mr.Guan">
 <meta property="article:tag" content="开发笔记">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE1.png">
+<meta name="twitter:image" content="http://jingboguan.github.io/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE1.png">
     
     
       
@@ -171,32 +171,32 @@
     <h1 id="Uniapp开发微信小程序-定位打卡"><a href="#Uniapp开发微信小程序-定位打卡" class="headerlink" title="Uniapp开发微信小程序-定位打卡"></a>Uniapp开发微信小程序-定位打卡</h1><hr>
 <p>​	Uniapp可以采用Vue前端框架实现多种移动端程序的前端，是我继Flutter后再次接触到的多端开发程序。本文记录了实际上手开发中遇到的问题及解决方法，以备以后再遇到这些问题。</p>
 <h3 id="UniappIDE配置及前期准备"><a href="#UniappIDE配置及前期准备" class="headerlink" title="UniappIDE配置及前期准备"></a>UniappIDE配置及前期准备</h3><p>​	<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/">微信公众平台</a>上申请一个小程序的开发权限，之后即可在设置中看到自己的小程序的AppID。信息备注只要完成前两个即可。</p>
-<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE1.png" class="" title="小程序设置">
+<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE1.png" class title="小程序设置">
 
-<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE2.png" class="" title="小程序设置2">
+<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE2.png" class title="小程序设置2">
 
 <p>​	此外，还需在[开发管理]-[接口设置]中申请chooseLocation的权限，chooseLocation应该已经足够了，getLocation审核很难通过：</p>
-<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE3.png" class="" title="小程序设置3">
+<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%BE%E7%BD%AE3.png" class title="小程序设置3">
 
 <p>​	Uniapp指定的IDE为HBuildX，创建新项目之后在其中的manifest.json文件中配置微信小程序相关信息即可（主要是AppID）。</p>
 <h3 id="总体前端设计以及打卡功能的实现"><a href="#总体前端设计以及打卡功能的实现" class="headerlink" title="总体前端设计以及打卡功能的实现"></a>总体前端设计以及打卡功能的实现</h3><p>​	关于Vue的快速上手教程可以看<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5d0d913d2453">这一篇博客</a>,打卡功能的设计思想是获取打卡地点与用户当前地点的经纬度，然后计算距离来打卡。</p>
-<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E4%BD%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.png" class="" title="位置图示">
+<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E4%BD%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.png" class title="位置图示">
 
 <p>​	具体的流程可以参考<a target="_blank" rel="noopener" href="https://juejin.cn/post/7166402937625788447">这篇</a>。在经纬度转为具体地址这一步中，需要注意以下几点：</p>
 <ol>
 <li>申请的密钥每天有10000此请求的配额，但是需要在配额管理中为逆地址转换函数分配份额。</li>
 </ol>
-<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E9%85%8D%E9%A2%9D%E5%88%86%E9%85%8D.png" class="" title="配额分配">
+<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/%E9%85%8D%E9%A2%9D%E5%88%86%E9%85%8D.png" class title="配额分配">
 
 <ol start="2">
 <li>申请的Key要同时勾选WebServiceApi和微信小程序，其中，WeibServiceApi中的域名白名单填入qq.com和servicewechat.com</li>
 </ol>
-<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/key%E8%AE%BE%E7%BD%AE.png" class="" title="key">
+<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/key%E8%AE%BE%E7%BD%AE.png" class title="key">
 
 <ol start="3">
 <li>官方的SDK应放在项目的static目录下，不然在引用时会出现错误。</li>
 </ol>
-<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/SDK%E5%AF%BC%E5%85%A5.png" class="" title="SDK">
+<img src="/2023/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/12/21/Uniapp%E5%BC%80%E5%8F%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E5%AE%9A%E4%BD%8D%E6%89%93%E5%8D%A1/SDK%E5%AF%BC%E5%85%A5.png" class title="SDK">
 
 <p>​	以上就是我在实现打卡功能中遇到的坑，并且搜索资料解决的方法。</p>
 

@@ -13,13 +13,13 @@
 <meta property="og:site_name" content="Nobody&#39;s Station">
 <meta property="og:description" content="WebServer代码复盘（一）——缓冲区临近实习结束，通过一暑假的学习，觉得自己对之前的项目内容理解的还不深。趁着业余时间重新分析一下这个WebServer项目，方便之后的复习。 +++ 缓冲区单独写了一个类，用来操作缓冲区中的数据，其中有三个静态变量： 123std::vector&lt;char&gt; buffer_;std::atomic&lt;std::size_t&gt; readP">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/image-20240902161359497.png">
+<meta property="og:image" content="http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/image-20240902161359497.png">
 <meta property="article:published_time" content="2024-09-04T13:28:49.000Z">
 <meta property="article:modified_time" content="2024-09-04T13:28:49.000Z">
 <meta property="article:author" content="Mr.Guan">
 <meta property="article:tag" content="工作">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/image-20240902161359497.png">
+<meta name="twitter:image" content="http://jingboguan.github.io/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/image-20240902161359497.png">
     
     
       
@@ -168,7 +168,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">char</span>&gt; buffer_;</span><br><span class="line">std::atomic&lt;std::<span class="type">size_t</span>&gt; readPos_;</span><br><span class="line">std::atomic&lt;std::<span class="type">size_t</span>&gt; writePos_;</span><br></pre></td></tr></table></figure>
 
 <p>大概思路可由下图来解释：</p>
-<img src="/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/image-20240902161359497.png" class="">
+<img src="/2024/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/09/04/WebServer%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%9B%98%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E7%BC%93%E5%86%B2%E5%8C%BA/image-20240902161359497.png" class>
 
 <p>其中，红色部分是需要读的内容，蓝色部分是需要写的内容。buffer_是主体，readPos_和writePos_用来标记两个区域的开始部分。</p>
 <p>接下来看看其中的主要的方法：</p>
