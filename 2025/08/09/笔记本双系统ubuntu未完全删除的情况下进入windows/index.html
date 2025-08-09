@@ -13,15 +13,15 @@
 <meta property="og:site_name" content="Nobody&#39;s Station">
 <meta property="og:description" content="今天想重装一下笔记本的系统，忘了自己装了个ubuntu的双系统，结果把ubuntu的系统文件删了，引导没有删（囧）。导致电脑开机只能进入GRUD命令行系统，无法选择ubuntu或是windows。但是我相信伟大的程序员一定为这个情况准备了后门，遂上网查询，果然问题得到解决，记录下来以供日后查询。 +++ 首先，开机后会来到以下画面。我们的思路就是用这个命令行系统找到windows启动文件，并启动w">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows//image-20250809192355274.png">
-<meta property="og:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows//image-20250809193635160.png">
-<meta property="og:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows//image-20250809194247830.png">
+<meta property="og:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/image-20250809192355274.png">
+<meta property="og:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/image-20250809193635160.png">
+<meta property="og:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/image-20250809194247830.png">
 <meta property="article:published_time" content="2025-08-09T11:12:14.000Z">
 <meta property="article:modified_time" content="2025-08-09T11:12:14.000Z">
 <meta property="article:author" content="Mr.Guan">
-<meta property="article:tag" content="生活">
+<meta property="article:tag" content="开发笔记">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows//image-20250809192355274.png">
+<meta name="twitter:image" content="http://jingboguan.github.io/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/image-20250809192355274.png">
     
     
       
@@ -149,7 +149,7 @@
       
     <div class="article-tag">
         <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a>
+        <a class="p-category" href="/tags/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" rel="tag">开发笔记</a>
     </div>
 
 
@@ -161,13 +161,13 @@
     <p>今天想重装一下笔记本的系统，忘了自己装了个ubuntu的双系统，结果把ubuntu的系统文件删了，引导没有删（囧）。导致电脑开机只能进入GRUD命令行系统，无法选择ubuntu或是windows。但是我相信伟大的程序员一定为这个情况准备了后门，遂上网查询，果然问题得到解决，记录下来以供日后查询。</p>
 <p>+++</p>
 <p>首先，开机后会来到以下画面。我们的思路就是用这个命令行系统找到windows启动文件，并启动windows。</p>
-<img src="笔记本双系统ubuntu未完全删除的情况下进入windows//image-20250809192355274.png" alt="image-20250809192355274" style="zoom:50%;">
+<img src="/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/image-20250809192355274.png" alt="image-20250809192355274" style="zoom:50%;">
 
 <p>首先设置启动目录，选择标签带有system的分区。</p>
-<img src="笔记本双系统ubuntu未完全删除的情况下进入windows//image-20250809193635160.png" alt="image-20250809193635160" style="zoom:50%;">
+<img src="/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/image-20250809193635160.png" alt="image-20250809193635160" style="zoom:50%;">
 
 <p>接下来要使用chainloader启动windows启动文件，路径为&#x2F;efi&#x2F;Microsoft&#x2F;Boot&#x2F;bootmgfw.efi，可以用TAB键补充。</p>
-<img src="笔记本双系统ubuntu未完全删除的情况下进入windows//image-20250809194247830.png" alt="image-20250809194247830" style="zoom:50%;">
+<img src="/2025/08/09/%E7%AC%94%E8%AE%B0%E6%9C%AC%E5%8F%8C%E7%B3%BB%E7%BB%9Fubuntu%E6%9C%AA%E5%AE%8C%E5%85%A8%E5%88%A0%E9%99%A4%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E5%85%A5windows/image-20250809194247830.png" alt="image-20250809194247830" style="zoom:50%;">
 
 <p>最后执行boot就行了。</p>
 
